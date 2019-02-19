@@ -1,0 +1,103 @@
+<!-- <%element%>
+<h1><% element.forEach(elem =>{ %>
+    <p><%=  elem.series_id%></p>
+<% }) %></h1> -->
+<style>
+    .t20Content{
+        width:100%;
+    }
+    .seriesNameContainer{
+        width: 20%;
+        float: left;
+    }
+    .seriesName{
+        width:100%;
+        border: 1px solid black;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        display: block;
+        text-align: center;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    .seriesName:hover{
+        cursor: pointer;
+        background-color: #FFEFD5;
+    }
+
+    .filter{
+        /* background-color: black; */
+        box-sizing: border-box;
+        float:left;
+        /* width: 40%; */
+        /* height: 10px; */
+        margin-top: 5px;
+        margin-left: 20px;
+        padding: 10px;
+        /* margin-right: 10px; */
+        border: 1px solid black;
+        border-radius: 4px; 
+    }
+</style>
+<script>
+    $(document).ready(() =>{
+        $('.seriesNameContainer .seriesName').click((elem)=>{
+            console.log(elem)
+            console.log($("#"+elem.currentTarget.id).index('.seriesNameContainer a'))
+            
+            const seriesId = parseInt(elem.target.id)
+            console.log("Sries Id : "+seriesId)
+            const url = "user/t20/series/"+seriesId;
+            console.log(url)
+            $.post(url, (data, stataus)=>{
+                console.log("T20 Series data Fetches")
+                console.log(data)
+            })
+        })
+    })
+</script>
+<div class = "t20Content">
+    <div class="seriesNameContainer">
+        <% element.forEach(elem =>{ %>
+            <a class="seriesName" id = <%= elem.series_id+"series"%>>
+                <%= elem.series_name%>
+            </a>
+        <% }) %>
+        
+    </div>
+    <div class = "filter">
+        <div>
+            Starting Year: 
+            <select name="StartingYear" id="startingYear">
+                <option value="2018">2018</option>
+                <option value="2017">2017</option>
+            </select>
+            Ending Year: 
+            <select name="EndingYear" id="endingYear">
+                <option value="2018">2018</option>
+                <option value="2017">2017</option>
+            </select>
+        </div>
+
+        <div>
+            Host Country: 
+            <select name="HostCountry" id="hostCountry">
+                <option value="India">India</option>
+                <option value="Australis">Australia</option>
+            </select>
+        </div>
+        <div>
+            Teams: 
+            <select name="Team1" id="team1">
+                <option value="India">India</option>
+                <option value="Australis">Australia</option>
+            </select>
+            vs
+            <select name="Team2" id="team2">
+                <option value="India">India</option>
+                <option value="Australis">Australia</option>
+            </select>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>CricStat: Admin</title>
+    <script>
+        // var series_types = []
+        // var authority = []
+
+
+    </script>
+    <style>
+        #seriesForm{
+            width: 40%;
+            margin: auto;
+        }
+        #seriesForm select, input{
+            width: 60%;
+        }
+    </style>
+</head>
+<body>
+    <form action="" id = "seriesForm">
+        Format: <br>
+        <select name="format" id="format">
+            <option value="T20">T20</option>
+            <option value="ODI">ODI</option>
+            <option value="Test">Test</option>
+        </select> <br>
+        Authority: <br>
+        <select name="authority" id="authority">
+            <% Authority.forEach(elem =>{ %>
+                <option value=<%= elem%> ><%= elem.authority%></option>
+            <%})%>
+        </select> <br>
+        Series Type: <br>
+        <select name="series_type" id="series_type">
+            <% SeriesTypes.forEach(elem =>{%>
+                <option value=<%= elem%> ><%= elem.series_type%></option>
+            <%})%>
+        </select> <br>
+        Starting Date: <br>
+        <input type="date" id = "startingDate"> <br>
+        Ending Date: <br>
+        <input type="date" id = "endingDate"> <br>
+        Series Name: <br>
+        <input type="text" name = "series_name" placeholder="Enter" disabled>
+        <br>
+        <br>
+        <input type="submit" value = "Submit">
+    </form>
+</body>
+</html>
