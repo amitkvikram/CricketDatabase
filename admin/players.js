@@ -28,7 +28,7 @@ function getBlock(req, res){
     observerColumns.subscribe(
         v => { 
             console.log("Query Successful")
-            res.render("admin/playersInsert", {rolesArr: rolesArr, 
+            res.render("admin/players/playersInsert", {rolesArr: rolesArr, 
                 battingStyleArr: battingStyleArr,
                 bowlingStyleArr: bowlingStyleArr},
             (err, html)=>{
@@ -89,7 +89,7 @@ function getSuggestions(req, res){
         if(err) throw err
         console.log(results)
         console.log("Rendering Suggestions")
-        res.render("admin/playersSuggestion", {suggestionList: (results)})
+        res.render("admin/players/playersSuggestion", {suggestionList: (results)})
     })
 }
 

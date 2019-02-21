@@ -79,22 +79,22 @@ function getTableInfo(req, res){
         () => { console.log('complete') }
     );
 }
-
+ 
 function getAuthorityForm(req, res){
-    return res.render("admin/authorityInsert")
+    return res.render("admin/authority/authorityInsert")
 }
 
 function getUmpiresForm(req, res){
-    return res.render("admin/umpiresInsert")
+    return res.render("admin/umpires/umpiresInsert")
 }
 
 function getSeriesTypesForm(req, res){
-    return res.render("admin/seriesTypesInsert")
+    return res.render("admin/seriesTypes/seriesTypesInsert")
 }
 
 function getCountriesForm(req, res){
     console.log("Rendering")
-    return res.render("admin/countriesInsert")
+    return res.render("admin/countries/countriesInsert")
 }
 
 function getPlayersBlock(req, res){

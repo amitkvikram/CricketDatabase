@@ -14,7 +14,7 @@ const con = mysql.createConnection({
 })
 
 function getInsertForm(req, res){
-    res.render("admin/stadiumInsert")
+    res.render("admin/stadiums/stadiumsInsert")
 }
 
 module.exports.getInsertForm = getInsertForm
