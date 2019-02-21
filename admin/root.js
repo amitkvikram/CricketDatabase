@@ -6,7 +6,9 @@ const database  = "cricket"
 const express = require("express")
 const mysql = require("mysql")
 // app.use(express.static(__dirname + 'public'))
-const playersInsert = require("./playersInsert")   //Relative Path
+const players = require("./players")   //Relative Path
+const stadiumsInsert = require("./stadiums")
+const tableInfo = require("./tableInfo")
 
 //RxJs Observable
 const { Observable } = require("rxjs/Observable")
@@ -64,20 +66,7 @@ function init(req, res){
 
 function getTableInfo(req, res){
     const table_name = req.params.table_name
-    const getColumnsQuery = "SELECT column_name, data_type FROM " +
-                            "INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = \"" + table_name+"\""
-    console.log(getColumnsQuery)
-    observerColumns = Observable.create(subscriber => {
-        con.query(getColumnsQuery, (err, results, fields) => {
-            if(err){
-                subscriber.error(err)
-            }else{
-                subscriber.next(results);
-            }
-            subscriber.complete();
-        })
-    })
-    
+    observerColumns = tableInfo.getInfosObservable(con, table_name)
     observerColumns.subscribe(
         v => { 
             console.log("Query Successful")
@@ -108,13 +97,17 @@ function getCountriesForm(req, res){
     return res.render("admin/countriesInsert")
 }
 
-function getPlayersForm(req, res){
+function getPlayersBlock(req, res){
     console.log("Calling playersInsert.js")
-    playersInsert.getInsertForm(req, res)
+    players.getBlock(req, res)
 }
 
 function getPlayersSuggestion(req, res){
-    playersInsert.getSuggestions(req, res)
+    players.getSuggestions(req, res)
+}
+
+function getStadiumsForm(req, res){
+    stadiumsInsert.getInsertForm(req, res)
 }
 
 function insertIntoAuthority(req, res){
@@ -180,7 +173,7 @@ function insertIntoSeriesTypes(req, res){
 
 function insertIntoPlayers(req, res){
     console.log("Calling playersInsert.js")
-    playersInsert.insertIntoTable(req, res)
+    players.insertIntoTable(req, res)
 }
 
 module.exports.init = init
@@ -189,8 +182,9 @@ module.exports.getAuthorityForm = getAuthorityForm
 module.exports.getUmpiresForm = getUmpiresForm
 module.exports.getCountriesForm = getCountriesForm
 module.exports.getSeriesTypesForm = getSeriesTypesForm
-module.exports.getPlayersForm = getPlayersForm
+module.exports.getPlayersBlock = getPlayersBlock
 module.exports.getPlayersSuggestion = getPlayersSuggestion
+module.exports.getStadiumsForm = getStadiumsForm
 module.exports.insertIntoAuthority = insertIntoAuthority
 module.exports.insertIntoUmpires = insertIntoUmpires
 module.exports.insertIntoCoutries = insertIntoCoutries

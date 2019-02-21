@@ -5,6 +5,8 @@ const database = "cricket"
 
 const express = require("express")
 const mysql = require("mysql")
+const tableInfo = require("./tableInfo")
+const { Observable } = require("rxjs/Observable")
 
 const con = mysql.createConnection({
     host: servername,
@@ -20,10 +22,27 @@ const bowlingStyleArr = ['Right-arm fast', 'Right-arm medium',
                             'Left-arm fast', 'Left-arm medium', 'Left-arm fast-medium',
                             'Left-arm chinaman', 'Left-arm orthodox']
 
-function getInsertForm(req, res){
-    res.render("admin/playersInsert", {rolesArr: rolesArr, 
-                                        battingStyleArr: battingStyleArr,
-                                        bowlingStyleArr: bowlingStyleArr})
+function getBlock(req, res){
+    const table_name = "Players"
+    observerColumns = tableInfo.getInfosObservable(con, table_name)
+    observerColumns.subscribe(
+        v => { 
+            console.log("Query Successful")
+            res.render("admin/playersInsert", {rolesArr: rolesArr, 
+                battingStyleArr: battingStyleArr,
+                bowlingStyleArr: bowlingStyleArr},
+            (err, html)=>{
+            if(err) throw err
+            console.log("form rendered, rendering Pan")
+            res.render("admin/rightPan", {table_name: table_name, infos: v, insertionForm: html})
+            })
+        },
+        e => { 
+            console.log("Root.js: Error Occured")
+            console.log(e) 
+        },
+        () => { console.log('complete') }
+    );
 }
 
 function insertIntoTable(req, res){
@@ -62,7 +81,8 @@ function getSuggestions(req, res){
                         " AND  role = '" + role + "'" + 
                         " AND dob LIKE '" + dob + "%'" +
                         " AND batting_style = '" + batting_style  + "'" +
-                        " AND bowling_style = '" + bowling_style  + "'" 
+                        " AND bowling_style = '" + bowling_style  + "'" +
+                        " ORDER BY player_name ASC"
 
     console.log(sql_query)
     con.query(sql_query, (err, results, fields) => {
@@ -73,6 +93,6 @@ function getSuggestions(req, res){
     })
 }
 
-module.exports.getInsertForm = getInsertForm
+module.exports.getBlock = getBlock
 module.exports.insertIntoTable = insertIntoTable
 module.exports.getSuggestions = getSuggestions

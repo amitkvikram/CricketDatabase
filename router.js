@@ -42,14 +42,15 @@ router.post("/admin/:table_name", (req, res) => {
 })
 
 /* Admin Page Entry -> Table Info -> Table Insertion Form*/
-router.post("/admin/insertForm/:table_name", (req, res) => {
+router.post("/admin/rightPan/:table_name", (req, res) => {
     const table_name = req.params.table_name
-    console.log("Getting Form " + req.params.table_name)
+    console.log("Getting Right Pan " + req.params.table_name)
     if(table_name === "Authority") rootAdmin.getAuthorityForm(req, res)
     else if(table_name === "Umpires") rootAdmin.getUmpiresForm(req, res)
     else if(table_name === "Countries") rootAdmin.getCountriesForm(req, res)
     else if(table_name === "SeriesTypes") rootAdmin.getSeriesTypesForm(req, res)
-    else if(table_name === "Players") rootAdmin.getPlayersForm(req, res)
+    else if(table_name === "Players") rootAdmin.getPlayersBlock(req, res)
+    else if(table_name === "Stadiums") rootAdmin.getStadiumsForm(req, res)
     else{
         res.send("Error")
     }
@@ -65,6 +66,7 @@ router.post("/admin/insert/:table_name", (req, res) => {
     else if(table_name === "Countries") rootAdmin.insertIntoCoutries(req, res)
     else if(table_name === "SeriesTypes") rootAdmin.insertIntoSeriesTypes(req, res)
     else if(table_name === "Players") rootAdmin.insertIntoPlayers(req, res)
+    // else if(table_name == "Stadiums")
     else res.send(table_name + "does not exits")
 })
 
