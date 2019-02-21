@@ -7,7 +7,7 @@ const express = require("express")
 const mysql = require("mysql")
 // app.use(express.static(__dirname + 'public'))
 const players = require("./players")   //Relative Path
-const stadiumsInsert = require("./stadiums")
+const stadiums = require("./stadiums")
 const tableInfo = require("./tableInfo")
 
 //RxJs Observable
@@ -98,7 +98,7 @@ function getCountriesForm(req, res){
 }
 
 function getPlayersBlock(req, res){
-    console.log("Calling playersInsert.js")
+    console.log("Calling players.js")
     players.getBlock(req, res)
 }
 
@@ -106,8 +106,13 @@ function getPlayersSuggestion(req, res){
     players.getSuggestions(req, res)
 }
 
-function getStadiumsForm(req, res){
-    stadiumsInsert.getInsertForm(req, res)
+function getStadiumsBlock(req, res){
+    console.log("Calling stadium.js")
+    stadiums.getBlock(req, res)
+}
+
+function getStadiumsSuggestion(req, res){
+    stadiums.getSuggestions(req, res)
 }
 
 function insertIntoAuthority(req, res){
@@ -140,7 +145,7 @@ function insertIntoUmpires(req, res){
     })
 }
 
-function insertIntoCoutries(req, res){
+function insertIntoCountries(req, res){
     const countryName = req.body.country_name
     const sql_query = "INSERT INTO Countries(country_name) Values('" + countryName + 
                         "')"
@@ -172,8 +177,13 @@ function insertIntoSeriesTypes(req, res){
 }
 
 function insertIntoPlayers(req, res){
-    console.log("Calling playersInsert.js")
+    console.log("Calling players.js")
     players.insertIntoTable(req, res)
+}
+
+function insertIntoStadiums(req, res){
+    console.log("Calling stadiums.js")
+    stadiums.insertIntoTable(req, res)
 }
 
 module.exports.init = init
@@ -184,7 +194,8 @@ module.exports.getCountriesForm = getCountriesForm
 module.exports.getSeriesTypesForm = getSeriesTypesForm
 module.exports.getPlayersBlock = getPlayersBlock
 module.exports.getPlayersSuggestion = getPlayersSuggestion
-module.exports.getStadiumsForm = getStadiumsForm
+module.exports.getStadiumsBlock = getStadiumsBlock
+module.exports.getStadiumsSuggestion = getStadiumsSuggestion
 module.exports.insertIntoAuthority = insertIntoAuthority
 module.exports.insertIntoUmpires = insertIntoUmpires
 module.exports.insertIntoCoutries = insertIntoCoutries
