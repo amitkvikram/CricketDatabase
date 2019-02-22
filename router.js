@@ -50,7 +50,7 @@ router.post("/admin/rightPan/:table_name", (req, res) => {
     else if(table_name === "Countries") rootAdmin.getCountriesForm(req, res)
     else if(table_name === "SeriesTypes") rootAdmin.getSeriesTypesForm(req, res)
     else if(table_name === "Players") rootAdmin.getPlayersBlock(req, res)
-    else if(table_name === "Stadiums") rootAdmin.getStadiumsForm(req, res)
+    else if(table_name === "Stadiums") rootAdmin.getStadiumsBlock(req, res)
     else{
         res.send("Error")
     }
