@@ -26,7 +26,7 @@ function getBlock(req, res){
                 if(err) throw err
                 console.log("Form Rendered, Rendering Pan")
                 res.render("admin/rightPan", {table_name:table_name,
-                        infos: v, getInsertForm: html})
+                        infos: v, insertionForm: html})
             })
         },
         e => {
