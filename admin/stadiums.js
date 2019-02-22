@@ -31,7 +31,7 @@ function getBlock(req, res){
         },
         e => {
             console.log("Root.js: Error Occured")
-            console.log(e)
+            throw e
         },
         () => {console.log("Completed")}
     )
