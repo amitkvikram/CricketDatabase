@@ -71,7 +71,7 @@
 
         function postRequest(a, b, c, d, e){
             data1 = {player_name: a, role: b, dob: c, batting_style: d, bowling_style: e}
-            console.log("Posting Data")
+            console.log("Posting Data for Suggestion")
             // console.log(JSON.stringify(data1))
             $.ajax({
                 type: 'POST',
@@ -79,14 +79,9 @@
                 contentType: "application/json",
                 data: JSON.stringify(data1),
                 success: (data) =>{
-                    console.log(data)
+                    // console.log(data)
                     console.log("Suggestions Fetched: insertingAfter")
-                    // if($('#suggestionBlock').length == 0){
-                    //     $(data).insertAfter('#insertionForm')
-                    // }
-                    // else{
                         $('#insertionSuggestion_fkBlock').html(data)
-                    // }
                 },
                 error: (err) =>{
                     console.log(err)
@@ -138,8 +133,9 @@
             )
 
             $('#playersInsertForm').submit(event => {
-                console.log("Inserting Data")
                 event.preventDefault()
+                event.stopImmediatePropagation()
+                console.log("Inserting Data")
                 var formData = $('#playersInsertForm').serialize()
                 console.log(formData)
                 $.ajax({
@@ -149,7 +145,7 @@
                     contentType: "application/x-www-form-urlencoded",
                     success: (data) => {
                         alert(data)
-                        // console.log("Data Inserted")
+                        console.log("Data Inserted")
                         $('#playersInsertForm').trigger("reset")
                     },
                     error: (err) => {
