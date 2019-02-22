@@ -198,6 +198,6 @@ module.exports.getStadiumsBlock = getStadiumsBlock
 module.exports.getStadiumsSuggestion = getStadiumsSuggestion
 module.exports.insertIntoAuthority = insertIntoAuthority
 module.exports.insertIntoUmpires = insertIntoUmpires
-module.exports.insertIntoCoutries = insertIntoCoutries
+module.exports.insertIntoCountries = insertIntoCountries
 module.exports.insertIntoSeriesTypes = insertIntoSeriesTypes
 module.exports.insertIntoPlayers = insertIntoPlayers
