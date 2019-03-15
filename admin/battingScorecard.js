@@ -20,9 +20,6 @@ function getQuote(s){
     return "'"+s+"'"
 }
 
-sql_authority = "SELECT * FROM Authority"
-sql_series_types = "SELECT * FROM SeriesTypes"
-
 function getObservable(sqlQuery) {
     return Observable.create(observer=>{
         con.query(sqlQuery, (err, results, fields) => {
@@ -37,33 +34,17 @@ function getObservable(sqlQuery) {
 }
 
 function getBlock(req, res){
-    const table_name = "Series"
+    const table_name = "BattingScorecard"
     observerColumns = tableInfo.getInfosObservable(con, table_name)
-    observerAuthority = getObservable(sql_authority)
-    observerSeriesTypes = getObservable(sql_series_types)
-
     observerColumns.subscribe(
         v => { 
             console.log("Query Successful")
-            zip(observerAuthority, observerSeriesTypes, (t1, t2)=>{
-                return {authority: t1, seriesTypes: t2}
-            }).subscribe(
-                (data) => {
-                    res.render("admin/series/seriesInsert",{Authority:(data.authority.results), 
-                                SeriesTypes:(data.seriesTypes.results)},
-                        (err, html)=>{
-                            if(err) throw err
-                            console.log("form rendered, rendering Pan")
-                            res.render("admin/rightPan", {table_name: table_name, infos: v, insertionForm: html})
-                        })
-                },
-                (err) => {
-                    throw err
-                },
-                () => {
-                    // console.log("Root.js: Completed")
-                }
-            )
+            res.render("admin/battingScorecard/battingScorecardInsert",
+            (err, html)=>{
+            if(err) throw err
+                console.log("form rendered, rendering Pan")
+                res.render("admin/rightPan", {table_name: table_name, infos: v, insertionForm: html})
+            })
         },
         e => { 
             console.log("Root.js: Error Occured")
@@ -74,20 +55,34 @@ function getBlock(req, res){
 }
 
 function insertIntoTable(req, res){
-    const series_name = getQuote(req.body.series_name)
-    const series_type = getQuote(req.body.series_type)
-    const num_of_teams = req.body.num_of_teams
-    const starting_date = getQuote(req.body.starting_date)
-    const end_date = getQuote(req.body.end_date)
-    const format = getQuote(req.body.format)
-    const authority = getQuote(req.body.authority)
+    const match_id =req.body.match_id
+    const player_id = req.body.player_id
+    const batting_position = req.body.batting_position
+    const team_position = req.body.team_position
+    const runs_scored = req.body.runs_scored
+    const balls_faced = req.body.balls_faced
+    const out_notout = req.body.out_notout
+    const out_by = req.body.out_by
+    const out_type = getQuote(req.body.out_type)
+    const out_by1 = req.body.out_by1
+    const fours = req.body.fours
+    const sixes = req.body.sixes
+    const fall_of_wicket_overs_done = req.body.fall_of_wicket_overs_done
+    const fall_of_wicket_ball_no = req.body.fall_of_wicket_ball_no
+    const fall_of_wicket_score = req.body.fall_of_wicket_score
+
     console.log("Information to be Inserted: ")
-    console.log(series_name, series_type, num_of_teams, starting_date, end_date, format, authority)
-    const sql_query = "INSERT INTO Series(series_name, series_type, num_of_teams," + 
-                    "starting_date, end_date, format, authority) Values(?, ?, ?, ?, ?, ?, ?)"
+    console.log("batting scorecard")
+    const sql_query = "INSERT INTO BattingScorecard("
+                    + "match_id, player_id, batting_position, team_position, runs_scored," 
+                    + "balls_faced, out_notout, out_by, out_type, out_by1, fours, sixes,"
+                    + "fall_of_wicket_overs_done, fall_of_wicket_ball_no, fall_of_wicket_score"
+                    + "Values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
     console.log(sql_query) 
-    con.query(sql_query, [series_name, series_type, num_of_teams, 
-                        starting_date, end_date, format, authority], 
+    con.query(sql_query, [match_id, player_id, batting_position, team_position,
+                        runs_scored, balls_faced, out_notout, out_by, 
+                        out_type, out_by1, fours, sixes, fall_of_wicket_overs_done, 
+                        fall_of_wicket_ball_no, fall_of_wicket_score], 
         (err, results, fields)=>{
             if(err){
                 res.send("Error")

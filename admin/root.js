@@ -7,8 +7,19 @@ const express = require("express")
 const mysql = require("mysql")
 // app.use(express.static(__dirname + 'public'))
 const players = require("./players")   //Relative Path
+const authority = require("./authority")   //Relative Path
+const battingScorecard = require("./battingScorecard")
+const bowlingScorecard = require("./bowlingScorecard")
+const countries = require("./countries")
+const extras = require("./extras")
+const matches = require("./matches")
+const matchPlayerTeam = require("./matchPlayerTeam")
 const stadiums = require("./stadiums")
+const series = require("./series")
+const seriesTypes = require("./seriesTypes")
 const tableInfo = require("./tableInfo")
+const teams = require("./teams")
+const umpires = require("./umpires")
 
 //RxJs Observable
 const { Observable } = require("rxjs/Observable")
@@ -80,21 +91,40 @@ function getTableInfo(req, res){
     );
 }
  
-function getAuthorityForm(req, res){
-    return res.render("admin/authority/authorityInsert")
+function getAuthorityBlock(req, res){
+    console.log("Calling authority.js")
+    authority.getBlock(req, res)
 }
 
-function getUmpiresForm(req, res){
-    return res.render("admin/umpires/umpiresInsert")
+function getBattingScorecardBlock(req, res){
+    console.log("calling battingScorecard.js")
+    battingScorecard.getBlock(req, res)
 }
 
-function getSeriesTypesForm(req, res){
-    return res.render("admin/seriesTypes/seriesTypesInsert")
+function getBowlingScorecard(req, res){
+    console.log("calling bowlingScorecard.js")
+    bowlingScorecard.getBlock(req, res)
 }
 
-function getCountriesForm(req, res){
-    console.log("Rendering")
-    return res.render("admin/countries/countriesInsert")
+function getSeriesTypesBlock(req, res){
+    seriesTypes.getBlock(req, res)
+}
+
+function getCountriesBlock(req, res){
+    console.log("Calling Coutries.js")
+    countries.getBlock(req, res)
+}
+
+function getExtrasBlock(req, res){
+    extras.getBlock(req,res)
+}
+
+function getMatchesBlock(req, res){
+    matches.getBlock(req, res)
+}
+
+function getMatchPlayerTeamBlock(req, res){
+    matchPlayerTeam.getBlock(req, res)
 }
 
 function getPlayersBlock(req, res){
@@ -106,6 +136,10 @@ function getPlayersSuggestion(req, res){
     players.getSuggestions(req, res)
 }
 
+function getSeriesBlock(req, res){
+    series.getBlock(req, res)
+}
+
 function getStadiumsBlock(req, res){
     console.log("Calling stadium.js")
     stadiums.getBlock(req, res)
@@ -113,6 +147,14 @@ function getStadiumsBlock(req, res){
 
 function getStadiumsSuggestion(req, res){
     stadiums.getSuggestions(req, res)
+}
+
+function getTeamsBlock(req, res){
+    teams.getBlock(req, res)
+}
+
+function getUmpiresBlock(req, res){
+    umpires.getBlock(req, res)
 }
 
 function insertIntoAuthority(req, res){
@@ -188,14 +230,21 @@ function insertIntoStadiums(req, res){
 
 module.exports.init = init
 module.exports.getTableInfo = getTableInfo
-module.exports.getAuthorityForm = getAuthorityForm
-module.exports.getUmpiresForm = getUmpiresForm
-module.exports.getCountriesForm = getCountriesForm
-module.exports.getSeriesTypesForm = getSeriesTypesForm
+module.exports.getAuthorityBlock = getAuthorityBlock
+module.exports.getBattingScorecardBlock = getBattingScorecardBlock
+module.exports.getBowlingScorecard = getBowlingScorecard
+module.exports.getExtrasBlock = getExtrasBlock
+module.exports.getUmpiresBlock = getUmpiresBlock
+module.exports.getCountriesBlock = getCountriesBlock
+module.exports.getMatchesBlock = getMatchesBlock
+module.exports.getMatchPlayerTeamBlock = getMatchPlayerTeamBlock
+module.exports.getSeriesTypesBlock = getSeriesTypesBlock
 module.exports.getPlayersBlock = getPlayersBlock
 module.exports.getPlayersSuggestion = getPlayersSuggestion
+module.exports.getSeriesBlock = getSeriesBlock
 module.exports.getStadiumsBlock = getStadiumsBlock
 module.exports.getStadiumsSuggestion = getStadiumsSuggestion
+module.exports.getTeamsBlock = getTeamsBlock
 module.exports.insertIntoAuthority = insertIntoAuthority
 module.exports.insertIntoUmpires = insertIntoUmpires
 module.exports.insertIntoCountries = insertIntoCountries
