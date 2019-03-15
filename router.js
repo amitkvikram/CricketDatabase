@@ -45,10 +45,17 @@ router.post("/admin/:table_name", (req, res) => {
 router.post("/admin/rightPan/:table_name", (req, res) => {
     const table_name = req.params.table_name
     console.log("Getting Right Pan " + req.params.table_name)
-    if(table_name === "Authority") rootAdmin.getAuthorityForm(req, res)
-    else if(table_name === "Umpires") rootAdmin.getUmpiresForm(req, res)
-    else if(table_name === "Countries") rootAdmin.getCountriesForm(req, res)
-    else if(table_name === "SeriesTypes") rootAdmin.getSeriesTypesForm(req, res)
+    if(table_name === "Authority") rootAdmin.getAuthorityBlock(req, res)
+    else if(table_name === "BattingScorecard") rootAdmin.getBattingScorecardBlock(req, res)
+    else if(table_name === "BowlingScorecard") rootAdmin.getBowlingScorecard(req, res)
+    else if(table_name === "Umpires") rootAdmin.getUmpiresBlock(req, res)
+    else if(table_name === "Countries") rootAdmin.getCountriesBlock(req, res)
+    else if(table_name === "Extras") rootAdmin.getExtrasBlock(req, res)
+    else if(table_name === "Matches") rootAdmin.getMatchesBlock(req, res)
+    else if(table_name === "MatchPlayerTeam") rootAdmin.getMatchPlayerTeamBlock(req, res)
+    else if(table_name === "Series") rootAdmin.getSeriesBlock(req, res)
+    else if(table_name === "SeriesTypes") rootAdmin.getSeriesTypesBlock(req, res)
+    else if(table_name === "Teams") rootAdmin.getTeamsBlock(req, res)
     else if(table_name === "Players") rootAdmin.getPlayersBlock(req, res)
     else if(table_name === "Stadiums") rootAdmin.getStadiumsBlock(req, res)
     else{
