@@ -21,7 +21,6 @@
             <td><%= d %></td>
             <td><%= elem.batting_style %></td>
             <td><%= elem.bowling_style %></td>
-        </tr>
     <%})%>
 </table>
 
@@ -29,11 +28,12 @@
     .suggestionBlock{
         border-bottom: 1px solid gray;
         border-collapse:collapse;
-        /* border: 1px solid gray; */
+        border: 1px solid gray;
     }
 
     .suggestionBlock td, .suggestionBlock th{
         padding: 4px;
+        word-break: keep-all;
     }
 
     .suggestionBlock td:not(:last-child), 
@@ -42,8 +42,7 @@
     }
 
     .suggestionBlock tr:not(:first-child):hover{
-        /* background-color: brown; */
-        /* color: white; */
         cursor: default;
     }
+
 </style>

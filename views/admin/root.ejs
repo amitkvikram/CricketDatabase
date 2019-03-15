@@ -20,7 +20,7 @@
             /* background-color: rgba(14, 11, 11, 0.795); */
             width: 100%;
             height: 100%;
-            visibility: hidden;
+            /* visibility: hidden; */
             overflow: hidden;
             padding:0;
             margin:0;
@@ -30,7 +30,7 @@
             /* margin-top: 70px; */
             overflow: hidden;
             height: 100%;
-            border-bottom: 5px solid red;
+            border-bottom: 1px solid black;
         }
 
         #header{
@@ -78,9 +78,9 @@
         }
 
         #tableContainer{
-            margin-top: 70px !important;
+            padding-top: 70px !important;
             max-width: 50%;
-            height: 90%;
+            height: 100%;
             padding-left:10px;
             padding-right: 12px;
             padding-bottom: 10px;
@@ -124,12 +124,12 @@
 
         #tableExpansion{
             /* max-width: 50%; */
-            margin-top: 70px;
+            padding-top: 70px;
             padding-left: 10px;
             padding-right: 10px;
             display: inline-block;
-            height:90%;
-            max-width: 20%;
+            height:100%;
+            /* max-width: 20%; */
             overflow: auto;
             vertical-align: top;
 
@@ -282,6 +282,7 @@
     </script>  
 </head>
 <body>
+    <!-- <div style = "max-width: 100%"> -->
     <div id = "header"><a href="/"">CricStat</a></div>
     <div id = "initialPan">
         <div id = "tableContainer">
@@ -320,5 +321,6 @@
             <button id = "insert_query">Insert/Query</button>
         </div>
     </div>
+<!-- </div> -->
 </body>
 </html>

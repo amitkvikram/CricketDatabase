@@ -1,7 +1,19 @@
 <div id = "insertionForm">
-    <form action="/", id = "seriesTypesInsertForm">
-        Enter Series Type: <br>
-        <input type="text" name = "series_type" placeholder="Enter" id = "series_type" required>
+    <form action="/", id = "countriesInsertForm">
+        Team Position: <br>
+        <input type="text" name = "team_position" placeholder="Enter" id = "team_position" required>
+        <br>
+        No Balls: <br>
+        <input type="text" name = "no_balls" placeholder="Enter" id = "no_balls" required>
+        <br>
+        Wide: <br>
+        <input type="text" name = "wide" placeholder="Enter" id = "wide" required>
+        <br>
+        Leg Byes: <br>
+        <input type="text" name = "leg_byes" placeholder="Enter" id = "leg_byes" required>
+        <br>
+        Byes: <br>
+        <input type="text" name = "byes" placeholder="Enter" id = "byes" required>
         <br>
         <input type="submit" name="submit"  id="submit">
     </form>
@@ -34,13 +46,13 @@
     
     <script>
         $(document).ready(()=> {
-            $('#seriesTypesInsertForm').submit(event => {
+            $('#extrasInsertForm').submit(event => {
                 event.preventDefault()
-                const formData = $('#seriesTypesInsertForm').serialize()
+                const formData = $('#extrasInsertForm').serialize()
     
                 $.ajax({
                     type: 'POST',
-                    url: 'admin/insert/SeriesTypes',
+                    url: 'admin/insert/Countries',
                     data: formData,
                     contentType: 'application/x-www-form-urlencoded',
                     success: (data)=>{
