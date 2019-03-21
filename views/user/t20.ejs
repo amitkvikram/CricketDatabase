@@ -1,12 +1,9 @@
-<!-- <%element%>
-<h1><% element.forEach(elem =>{ %>
-    <p><%=  elem.series_id%></p>
-<% }) %></h1> -->
 <style>
     .t20Content{
         width:100%;
     }
     .seriesNameContainer{
+        margin-left: 20px;  
         width: 20%;
         float: left;
     }
@@ -39,6 +36,10 @@
         border: 1px solid black;
         border-radius: 4px; 
     }
+    select{
+        padding: 4px;
+        margin: 2px;
+    }
 </style>
 <script>
     $(document).ready(() =>{
@@ -47,25 +48,17 @@
             console.log($("#"+elem.currentTarget.id).index('.seriesNameContainer a'))
             
             const seriesId = parseInt(elem.target.id)
-            console.log("Sries Id : "+seriesId)
+            console.log("Series Id : "+seriesId)
             const url = "user/t20/series/"+seriesId;
             console.log(url)
-            $.post(url, (data, stataus)=>{
-                console.log("T20 Series data Fetches")
+            $.post(url, (data, status)=>{
+                console.log("T20 Series data Fetched")
                 console.log(data)
             })
         })
     })
 </script>
 <div class = "t20Content">
-    <div class="seriesNameContainer">
-        <% element.forEach(elem =>{ %>
-            <a class="seriesName" id = <%= elem.series_id+"series"%>>
-                <%= elem.series_name%>
-            </a>
-        <% }) %>
-        
-    </div>
     <div class = "filter">
         <div>
             Starting Year: 
@@ -83,21 +76,47 @@
         <div>
             Host Country: 
             <select name="HostCountry" id="hostCountry">
-                <option value="India">India</option>
-                <option value="Australis">Australia</option>
+                <option value="all">
+                    All
+                </option>
+                <% countries.forEach(elem => { %>
+                    <option value= <%= elem.country_name %>>
+                        <%= elem.country_name %>
+                    </option>
+                <% }) %>
             </select>
         </div>
         <div>
             Teams: 
             <select name="Team1" id="team1">
-                <option value="India">India</option>
-                <option value="Australis">Australia</option>
+                <option value="all">
+                    All
+                </option>
+                <% teams.forEach(elem => { %>
+                    <option value= <%= elem.team_name %>>
+                        <%= elem.team_name %>
+                    </option>
+                <% }) %>
             </select>
             vs
             <select name="Team2" id="team2">
-                <option value="India">India</option>
-                <option value="Australis">Australia</option>
+                <option value="all">
+                    All
+                </option>
+                <% teams.forEach(elem => { %>
+                    <option value= <%= elem.team_name %>>
+                        <%= elem.team_name %>
+                    </option>
+                <% }) %>
             </select>
         </div>
+    </div>
+    <div class="seriesNameContainer">
+        <% series.forEach(elem =>{ %>
+            <a class="seriesName" id = <%= elem.series_id+"series"%>>
+                <%= elem.series_name%>
+            </a>
+        <% }) %>
+        
     </div>
 </div>
