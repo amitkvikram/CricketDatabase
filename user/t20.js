@@ -5,6 +5,8 @@ const database  = "cricket"
 
 const express = require("express")
 const mysql = require("mysql")
+const { Observable } = require("rxjs/Observable")
+const { zip } = require("rxjs/observable/zip")
 
 const con = mysql.createConnection({
     host:serverName,
@@ -13,19 +15,70 @@ const con = mysql.createConnection({
     database:database
 })
 
-var sql = "Select * from Series WHERE format = 'T20'\
-         ORDER BY starting_date DESC";
+var series_query = "Select * from Series WHERE format = 'T20'\
+         ORDER BY starting_date DESC"
+
+var country_query = 'SELECT * FROM Countries ORDER BY country_name'
+
+var teams_query = 'SELECT team_name from Teams ORDER BY team_name'
+
+function getCountryQueryObservable(){
+    return Observable.create(subscriber => {
+        con.query(country_query, (err, results, fields)=>{
+            if(err) subscriber.error(err)   
+            else subscriber.next({results: results, fields: fields})
+            subscriber.complete()
+        })
+    })
+}
+
+function getTeamsQueryObservable(){
+    return Observable.create(subscriber => {
+        con.query(teams_query, (err, results, fields)=> {
+            if(err){
+                subscriber.error(err)
+            }else{
+                subscriber.next({results: results, fields: fields})
+            }
+            subscriber.complete()
+        })
+    })
+}
+
+function getSeriesQueryObservable(){
+    return Observable.create(subscriber => {
+        con.query(series_query, (err, results, fields)=> {
+            if(err){
+                subscriber.error(err)
+            }else{
+                subscriber.next({results: results, fields:fields})
+            }
+            subscriber.complete()  
+        })
+    })
+    
+}
 
 function init(req, res){
-    con.query(sql, (err, result, fields)=> {
-        if(err){
-            console.log("t20.js: Query Could not be fethed")
-            throw err
-        }
-        console.log("T20: Rendering")
-        console.log(result)
-        return res.render("user/t20", {element:(result)})   
-    })
+    zip(getCountryQueryObservable(),
+        getSeriesQueryObservable(),
+        getTeamsQueryObservable(), 
+        (t1, t2, t3)=>{
+                return {countries: t1, series: t2, teams: t3}
+            }
+        ).subscribe(
+            (data)=>{
+                console.log("T20: Rendering")
+                return res.render("user/t20", 
+                    {series: data.series.results,
+                     countries: data.countries.results, 
+                     teams: data.teams.results}) 
+            },
+            (err)=>{
+                throw err
+            },
+            ()=>{}
+        )
 }
 
 function getSeries(req, res){
@@ -38,7 +91,6 @@ function getSeries(req, res){
             console.log("t20.js: Query for Series could not be fetched")
             throw err
         }
-        // console.log()
         return res.send(results);
     })
 }
