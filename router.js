@@ -96,5 +96,9 @@ router.post("/user/t20/series/:id", (req, res)=>{
     return t20.getSeries(req, res)
 })
 
+router.post("/user/t20/series", (req, res)=>{
+    return t20.getSeriesGroup(req, res)
+})
+
 
 module.exports = router;
