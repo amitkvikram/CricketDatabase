@@ -91,14 +91,20 @@ router.get("/user/t20", (req, res) => {
 })
 
 /*User Page -> T20 -> Series */
-router.post("/user/t20/series/:id", (req, res)=>{
+router.get("/user/t20/series/:id", (req, res)=>{
     console.log("Request for Series: "+req.params.id);
     return t20.getSeries(req, res)
 })
 
-router.post("/user/t20/series", (req, res)=>{
-    return t20.getSeriesGroup(req, res)
+/*User Page -> T20 -> Match */
+router.get("/user/t20/match/:id", (req, res)=>{
+    console.log("Request for Match: "+req.params.id);
+    return t20.getMatch(req, res)
 })
+
+router.post("/user/t20/series", (req, res)=>{
+    return t20.getSeriesGroup(req, res) 
+}) 
 
 
 module.exports = router;
