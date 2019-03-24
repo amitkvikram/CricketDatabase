@@ -3,10 +3,16 @@
     <head>
         <style>
             .seriesDetail{
-                min-width: 100%;
+                /* min-width: 100%; */
+                width: 100%;
                 overflow: auto;
+                /* border: 1px solid black; */
+                border-radius: 2px;
+                /* background-color:#f4f4f8  ; */
                 border-bottom: 1px solid black;
-                padding-bottom: 8px;
+                padding: 8px;
+                box-sizing: border-box;
+                padding-top: 0px;
             }
             .seriesDetail .left{
                 float: left;
@@ -24,14 +30,21 @@
                 color: brown;
             }
             .matches {
+                margin-top: 12px;
+                /* border: 1px solid black; */
                 float: left;
             }
             .teams{
                 float: left;
                 margin-left: 12px;
             }
-            .matches table, .teams table{
+            /* .matches table, .teams table{
                 border:1px solid black;
+            } */
+
+            .matches table td{
+                padding-right: 12px;
+                padding-bottom: 4px;
             }
         </style>
     </head>
