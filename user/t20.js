@@ -9,6 +9,7 @@ const fs = require('fs');
 const { Observable } = require("rxjs/Observable")
 const { zip } = require("rxjs/observable/zip")
 const { map } = require("rxjs/operators/map")
+const { mergeMap } = require("rxjs/operators/mergeMap")
 
 const con = mysql.createConnection({
     host:serverName,
@@ -16,6 +17,11 @@ const con = mysql.createConnection({
     password:password,
     database:database
 })
+
+const outType = {
+    caught: "c",
+    stumped: "st"
+}
 
 var series_query = "Select * from Series WHERE format = 'T20'\
          ORDER BY starting_date DESC"
@@ -73,7 +79,6 @@ function getSeriesQueryObservable(){
             subscriber.complete()  
         })
     })
-    
 }
 
 function init(req, res){
@@ -187,12 +192,76 @@ function getMatchDetailsObs(matchId){
     }))
 }
 
+function getBattingScorecardObs(matchId, teamId, teamName){
+    const sql_query = fs.readFileSync('battingScorecardQuery.sql', 'utf8');
+
+    return Observable.create(subscriber => {
+        con.query(sql_query,
+            [matchId, teamId, matchId], 
+            (err, results, fields)=>{
+                if(err) subscriber.error(err)
+                else{
+                    results[0].team_name = teamName;
+                     subscriber.next(results)
+                }
+                subscriber.complete()
+        })
+    })
+}
+
 function getMatch(req, res){
     const matchId = req.params.id
     getMatchDetailsObs(matchId)
+    .pipe(mergeMap(v =>{
+        return zip(
+            getBattingScorecardObs(matchId, v[0].team1_id, v[0].team1_name),
+            getBattingScorecardObs(matchId, v[0].team2_id, v[0].team2_name), 
+            (t1, t2)=>{
+                t1.forEach((elem, index, arr)=>{
+                    if(elem.out_notout == 0)
+                        arr[index].out = "not out"
+                    else{
+                        var temp = "b " + elem.bowler_name
+                        if(elem.out_by1 != null){
+                            temp = outType[elem.out_type] + " " + 
+                                elem.fielder_name + " " + temp 
+                        } 
+                        arr[index].out = temp
+                    }
+                })
+
+                t2.forEach((elem, index, arr)=>{
+                    if(elem.out_notout == 0)
+                        arr[index].out = "not out"
+                    else{
+                        var temp = "b " + elem.bowler_name
+                        if(elem.out_by1 != null){
+                            temp = outType[elem.out_type] + " " + 
+                                elem.fielder_name + " " + temp 
+                        } 
+                        arr[index].out = temp
+                    }
+                })
+
+                if(t1.length > 0 && t1[0].team_position == 1){
+                    return {team1: t1, team2: t2}
+                }
+                else{
+                    return {team1: t2, team2: t1}
+                } 
+            }
+        ).pipe(
+            map(v1 =>{
+                return {matchDetail: v, scorecard: v1}
+            })
+        )
+    }))    
     .subscribe(
         (data)=>{
-            res.render("user/matchDetail", {MatchDetail: data})
+            console.log(data.scorecard)
+            res.render("user/matchDetail", {MatchDetail: data.matchDetail, 
+                                    team1Scorecard: data.scorecard.team1,
+                                    team2Scorecard: data.scorecard.team2})
         },
         (err)=>{
             throw err;
