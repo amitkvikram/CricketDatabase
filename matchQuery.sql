@@ -1,4 +1,4 @@
- WITH T AS (SELECT * FROM Matches WHERE match_id = 1),  
+ WITH T AS (SELECT * FROM Matches WHERE match_id = ?),  
  T1 as 
     (SELECT MAX(MPT.team_id) as team1_id, MIN(MPT.team_id) as team2_id 
     FROM T inner join MatchPlayerTeam as MPT ON (T.match_id =MPT.match_id)), 
