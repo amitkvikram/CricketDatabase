@@ -5,7 +5,7 @@
     .seriesNameContainer{
         margin-left: 20px;  
         width: 20%;
-        float: left;
+        /* float: left; */
     }
     .seriesName{
         width:100%;
@@ -27,6 +27,7 @@
         /* background-color: black; */
         box-sizing: border-box;
         float:left;
+        clear: both;
         /* width: 40%; */
         /* height: 10px; */
         margin-top: 5px;
@@ -36,9 +37,9 @@
         border: 1px solid black;
         border-radius: 4px; 
     }
-    select{
+    select, input[type='date']{
         padding: 4px;
-        margin: 2px;
+        margin: 4px;
     }
 </style>
 <script>
@@ -56,9 +57,86 @@
                 console.log(data)
             })
         })
+
+        $("input[type='radio'][name='fetch']").eq(0).prop("checked", true);
+
+        var fetchRadioStrt = $("input[type='radio'][name='fetch']:checked").val()
+        
+        var fetchRadioObs = 
+            Rx.Observable.fromEvent($("input[type='radio'][name='fetch']")
+                                , 'change')
+                                .startWith(fetchRadioStrt)
+                                .map(v => 
+                                {
+                                    var value = v
+                                    if(typeof v !== 'string'){
+                                        value = $(v.target).val()
+                                    }
+                                    if(value == 'series'){
+                                        $("#hostCountry").prop('disabled', true)
+                                    }
+                                    else{
+                                        $("#hostCountry").prop('disabled', false) 
+                                    }
+                                    return v
+                                })
+        
+        var startingDateObs = 
+            Rx.Observable.fromEvent($("#startingDate"),'blur')
+                                .startWith("")
+        
+        var endingDateObs = 
+            Rx.Observable.fromEvent($("#endingDate"),'blur')
+                                .startWith("")
+        
+        var team1Obs = 
+            Rx.Observable.fromEvent($("#team1"),'change')
+                                .startWith("-1")
+        
+        var team2Obs = 
+            Rx.Observable.fromEvent($("#team2"),'change')  
+                                .startWith("-1")
+            
+        var combinedObs = Rx.Observable.combineLatest(fetchRadioObs, startingDateObs,
+                                endingDateObs, team1Obs, team2Obs
+                                )
+                                .debounce(200)
+                                .map(([a, b, c, d, e])=>{   
+                                    if(typeof a !== 'string') a = $(a.target).val()
+                                    if(typeof b !== 'string') b = $(b.target).val()
+                                    if(typeof c !== 'string') c = $(c.target).val()
+                                    if(typeof d !== 'string') d = $(d.target).val()
+                                    if(typeof e !== 'string') e = $(e.target).val()
+                                    return [a, b, c, d, e]
+                                })
+
+        combinedObs.subscribe(
+            ([a, b, c, d, e])=>{
+                console.log("Result = ", a, b, c, d, e)
+                if(a == 'series'){
+                    data = {strtDt: b, endDt: c, team1ID: d, team2ID: e}
+                    $.post({
+                        type: 'POST',
+                        url: 'user/t20/series',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
+                        success: (data)=>{
+                            $('.queryResult').replaceWith(data)
+                        },
+                        error: (err)=>{
+                            console.log(err)
+                        } 
+                    })
+                }else{
+
+                }
+            },
+            (err)=>{console.log(err)}
+        )
     })
 </script>
 <div class = "t20Content">
+    <h2 style="margin-left: 20px;">Filter</h2>
     <div class = "filter">
         <div>
             <input type="radio" name = "fetch" value = "series">
@@ -68,16 +146,11 @@
             <br>
         </div>
         <div>
-            Starting Year: 
-            <select name="StartingYear" id="startingYear">
-                <option value="2018">2018</option>
-                <option value="2017">2017</option>
-            </select>
-            Ending Year: 
-            <select name="EndingYear" id="endingYear">
-                <option value="2018">2018</option>
-                <option value="2017">2017</option>
-            </select>
+            Starting Date: 
+            <input type="date" name="StartingDate" id="startingDate">
+            <br>
+            Ending Date:
+            <input type="date" name="EndDate" id="endDate">
         </div>
 
         <div>
@@ -96,34 +169,35 @@
         <div>
             Teams: 
             <select name="Team1" id="team1">
-                <option value="all">
+                <option value="-1">
                     All
                 </option>
                 <% teams.forEach(elem => { %>
-                    <option value= <%= elem.team_name %>>
-                        <%= elem.team_name %>
+                    <option value= <%= elem.team_id%>>
+                        <%= elem.team_name + " : " + elem.authority%>
                     </option>
                 <% }) %>
             </select>
             vs
             <select name="Team2" id="team2">
-                <option value="all">
+                <option value="-1">
                     All
                 </option>
                 <% teams.forEach(elem => { %>
-                    <option value= <%= elem.team_name %>>
-                        <%= elem.team_name %>
+                    <option value= <%= elem.team_id%>>
+                        <%= elem.team_name + " : " + elem.authority%>
                     </option>
                 <% }) %>
             </select>
         </div>
     </div>
-    <div class="seriesNameContainer">
+    <div class="queryResult"></div>
+    <!-- <div class="seriesNameContainer">
         <% series.forEach(elem =>{ %>
             <a class="seriesName" id = <%= elem.series_id+"series"%>>
                 <%= elem.series_name%>
             </a>
         <% }) %>
         
-    </div>
+    </div> -->
 </div>
