@@ -5,6 +5,7 @@ const database  = "cricket"
 
 const express = require("express")
 const mysql = require("mysql")
+const fs = require('fs');
 const { Observable } = require("rxjs/Observable")
 const { zip } = require("rxjs/observable/zip")
 const { map } = require("rxjs/operators/map")
@@ -23,6 +24,20 @@ var teams_query = 'SELECT team_id, team_name, authority from Teams ORDER BY team
 var dates_query = 'SELECT MIN(starting_date) as strtDate, \
                         MAX(end_date) as endDate from Series \
                         WHERE format = "T20"'
+
+
+function formatDate(dt){
+    var monthNames = [
+        "Jan", "Feb", "March",
+        "April", "May", "June", "July",
+        "Aug", "Sept", "Oct",
+        "Nov", "Dec"
+        ];
+    var day = dt.getDate();
+    var monthIndex = dt.getMonth();
+    var year = dt.getFullYear();
+    return day + " " + monthNames[monthIndex] + " " + year
+}
 
 function getCountryQueryObservable(){
     return Observable.create(subscriber => {
@@ -53,7 +68,7 @@ function getSeriesQueryObservable(){
             if(err){
                 subscriber.error(err)
             }else{
-                subscriber.next({results: results, fields:fields})
+                subscriber.next(results)
             }
             subscriber.complete()  
         })
@@ -67,12 +82,12 @@ function init(req, res){
         getTeamsQueryObservable(), 
         (t1, t2, t3)=>{
                 return {countries: t1, series: t2, teams: t3}
-            }
+            } 
         ).subscribe(
             (data)=>{
                 console.log("T20: Rendering")
                 return res.render("user/t20", 
-                    {series: data.series.results,
+                    {series: data.series,
                      countries: data.countries.results, 
                      teams: data.teams.results}) 
             },
@@ -81,19 +96,6 @@ function init(req, res){
             },
             ()=>{}
         )
-}
-
-function formatDate(dt){
-    var monthNames = [
-        "January", "February", "March",
-        "April", "May", "June", "July",
-        "August", "September", "October",
-        "November", "December"
-        ];
-    var day = dt.getDate();
-    var monthIndex = dt.getMonth();
-    var year = dt.getFullYear();
-    return day + " " + monthNames[monthIndex] + " " + year
 }
 
 function getMatchesOfSeriesObs(seriesId){
@@ -127,14 +129,12 @@ function getMatchesOfSeriesObs(seriesId){
 }
 
 function getTeamsOfSeriesObs(seriesId){
-    const sql_query = "with T(team_id) \
-        AS (SELECT DISTINCT team_id \
+    const sql_query = "with T(team_id, team_name) \
+        AS (SELECT DISTINCT team_id, team_name \
         from (MatchPlayerTeam natural join \
-        Matches natural join Series natural join Teams) \
+        Matches natural join Teams) \
         WHERE series_id = ?) \
-        SELECT T.team_id, R.team_name from T inner join \
-        (Teams as R) \
-        ON(T.team_id = R.team_id);"
+        SELECT T.team_id, T.team_name from T"
     
     console.log(sql_query)
     
@@ -169,9 +169,36 @@ function getSeriesObs(seriesId){
     }))
 }
 
+function getMatchDetailsObs(matchId){
+    const sql_query = fs.readFileSync('matchQuery.sql', 'utf8');
+    
+    return Observable.create(subscriber => {
+        con.query(sql_query, [matchId], (err, results, fields)=>{
+            if(err) subscriber.error(err)
+            else subscriber.next(results);
+            subscriber.complete();  
+        })
+    }).pipe(map(v => {
+        v.forEach((elem, index, arr)=>{
+            v[index].date = formatDate(elem.date)
+        })
+
+        return v
+    }))
+}
+
 function getMatch(req, res){
     const matchId = req.params.id
-    res.render("user/matchDetail")
+    getMatchDetailsObs(matchId)
+    .subscribe(
+        (data)=>{
+            res.render("user/matchDetail", {MatchDetail: data})
+        },
+        (err)=>{
+            throw err;
+        },
+        ()=>{}
+    )
 }
 
 function getSeries(req, res){
@@ -226,6 +253,12 @@ function getSeriesGroup(req, res){
                     throw err
                 }
                 else{
+                    results.forEach((elem, index, arr)=>{
+                        results[index].starting_date = 
+                            formatDate(elem.starting_date)
+                        results[index].end_date = 
+                            formatDate(elem.end_date)
+                    })
                     res.render("user/t20Series.ejs", {series:results})
                 }
             })
