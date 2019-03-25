@@ -209,6 +209,21 @@ function getBattingScorecardObs(matchId, teamId, teamName){
     })
 }
 
+function getBowlingScorecardObs(matchId, teamId){
+    const sql_query = fs.readFileSync('bowlingScorecardQuery.sql','utf-8')
+
+    return Observable.create(subscriber => {
+        con.query(sql_query,[teamId, matchId], 
+            (err, results, fields)=>{
+            if(err) subscriber.error(err)
+            else{
+                subscriber.next(results)
+            }
+            subscriber.complete()
+        })
+    })
+}
+
 function getMatch(req, res){
     const matchId = req.params.id
     getMatchDetailsObs(matchId)
@@ -216,7 +231,9 @@ function getMatch(req, res){
         return zip(
             getBattingScorecardObs(matchId, v[0].team1_id, v[0].team1_name),
             getBattingScorecardObs(matchId, v[0].team2_id, v[0].team2_name), 
-            (t1, t2)=>{
+            getBowlingScorecardObs(matchId, v[0].team1_id), 
+            getBowlingScorecardObs(matchId, v[0].team2_id), 
+            (t1, t2, t3, t4)=>{
                 t1.forEach((elem, index, arr)=>{
                     if(elem.out_notout == 0)
                         arr[index].out = "not out"
@@ -244,11 +261,13 @@ function getMatch(req, res){
                 })
 
                 if(t1.length > 0 && t1[0].team_position == 1){
-                    return {team1: t1, team2: t2}
+                    return {team1: {batting: t1, bowling: t3}, 
+                            team2: {batting: t2, bowling: t4}}
                 }
                 else{
-                    return {team1: t2, team2: t1}
-                } 
+                    return {team1: {batting: t2, bowling: t4}, 
+                            team2: {batting: t1, bowling: t3}}
+                }
             }
         ).pipe(
             map(v1 =>{
@@ -260,7 +279,7 @@ function getMatch(req, res){
         (data)=>{
             console.log(data.scorecard)
             res.render("user/matchDetail", {MatchDetail: data.matchDetail, 
-                                    team1Scorecard: data.scorecard.team1,
+                                     team1Scorecard: data.scorecard.team1,
                                     team2Scorecard: data.scorecard.team2})
         },
         (err)=>{
