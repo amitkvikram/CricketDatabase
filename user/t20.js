@@ -296,8 +296,8 @@ function getSeries(req, res){
 
 function getSeriesGroup(req, res){
     console.log(req.body)
-    var team1ID = req.body.team1ID
-    var team2ID = req.body.team2ID
+    var team1ID = parseInt(req.body.team1ID)
+    var team2ID = parseInt(req.body.team2ID)
     var strtDt = "2001-01-01"
     var endDt = "2024-01-01"
     if(req.body.strtDt != '') strtDt = req.body.strtDt
@@ -305,14 +305,14 @@ function getSeriesGroup(req, res){
 
     const sql_query = "SELECT distinct series_id, series_name, series_type, \
             starting_date, end_date, authority\
-            FROM Series natural join Matches natural join MatchPlayerTeam \
+            FROM Series natural join Matches as M natural join MatchPlayerTeam \
             natural join Teams \
             WHERE starting_date >= ? \
             and end_date <= ? \
-            and ? < 0 OR team_id = ? \
+            and (? < 0 OR team_id = ?) \
             and EXISTS (SELECT * FROM MatchPlayerTeam as MPT natural join Teams \
-            WHERE ? < 0 OR Teams.team_id = ? \
-            and MPT.match_id = match_id) "
+            WHERE (? < 0 OR Teams.team_id = ?) \
+            and MPT.match_id = M.match_id) "
 
     con.query(sql_query, [strtDt, endDt, team1ID, team1ID, 
                             team2ID, team2ID],
