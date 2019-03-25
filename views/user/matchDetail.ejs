@@ -58,6 +58,8 @@
             }
             .scorecard > div{
                 text-align: center;
+                box-sizing: border-box;
+                padding: 5px;
             }
             .team2{
                 display: none;
@@ -92,11 +94,12 @@
                         $(".team1").toggle()
                         $(".team2").toggle()
                     if(target == "team1"){
-                        $(".teamSelection:first-of-type").prop()
+                        $(".teamSelection:first-of-type").css("background-color", "rgb(212, 202, 174)")
+                        $(".teamSelection:not(:first-of-type)").css("background-color", "white")
+                    }else{
+                        $(".teamSelection:first-of-type").css("background-color", "white")
+                        $(".teamSelection:not(:first-of-type)").css("background-color", "rgb(212, 202, 174)")
                     }
-                    // }else{
-
-                    // }
                 })
             })
         </script>
