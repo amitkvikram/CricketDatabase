@@ -153,7 +153,10 @@
             <span class="attribute">
                 Stadium: 
             </span>
-            <%=MatchDetail[0].stadium_name%>
+            <a href=<%="http://localhost:8080/user/stadium/"
+                    + MatchDetail[0].stadium_id%>>
+                <%=MatchDetail[0].stadium_name%>
+            </a>
             <br>
             <span class="attribute">
                 Umpires: 
