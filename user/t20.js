@@ -175,7 +175,7 @@ function getSeriesObs(seriesId){
 }
 
 function getMatchDetailsObs(matchId){
-    const sql_query = fs.readFileSync('matchQuery.sql', 'utf8');
+    const sql_query = fs.readFileSync('queries/matchQuery.sql', 'utf8');
     
     return Observable.create(subscriber => {
         con.query(sql_query, [matchId], (err, results, fields)=>{
@@ -193,7 +193,7 @@ function getMatchDetailsObs(matchId){
 }
 
 function getBattingScorecardObs(matchId, teamId, teamName){
-    const sql_query = fs.readFileSync('battingScorecardQuery.sql', 'utf8');
+    const sql_query = fs.readFileSync('queries/battingScorecardQuery.sql', 'utf8');
 
     return Observable.create(subscriber => {
         con.query(sql_query,
@@ -210,7 +210,7 @@ function getBattingScorecardObs(matchId, teamId, teamName){
 }
 
 function getBowlingScorecardObs(matchId, teamId){
-    const sql_query = fs.readFileSync('bowlingScorecardQuery.sql','utf-8')
+    const sql_query = fs.readFileSync('queries/bowlingScorecardQuery.sql','utf-8')
 
     return Observable.create(subscriber => {
         con.query(sql_query,[teamId, matchId], 
@@ -362,7 +362,7 @@ function getMatchGroup(req, res){
     if(req.body.endDt != '') endDt = req.body.endDt
     var hostCountryID = parseInt(req.body.hostCountryId)
 
-    const sql_query = fs.readFileSync("matchGroupQuery.sql", 'utf-8')
+    const sql_query = fs.readFileSync("queries/matchGroupQuery.sql", 'utf-8')
     console.log(sql_query)
     console.log([strtDt, endDt, team1ID, team1ID, 
         hostCountryID, hostCountryID, 
