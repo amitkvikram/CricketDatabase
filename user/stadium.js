@@ -19,7 +19,7 @@ con = mysql.createConnection({
 })
 
 function getStadiumObs(stadiumId){
-    const sql_query = fs.readFileSync("stadiumDetailQuery.sql", 'utf-8')
+    const sql_query = fs.readFileSync("queries/stadiumDetailQuery.sql", 'utf-8')
     return Observable.create(subscriber => {
         con.query(sql_query,
              [stadiumId, stadiumId, 
