@@ -352,7 +352,41 @@ function getSeriesGroup(req, res){
             })
 }
 
+function getMatchGroup(req, res){
+    console.log("Matches = ", req.body)
+    var team1ID = parseInt(req.body.team1ID)
+    var team2ID = parseInt(req.body.team2ID)
+    var strtDt = "2001-01-01"
+    var endDt = "2024-01-01"
+    if(req.body.strtDt != '') strtDt = req.body.strtDt
+    if(req.body.endDt != '') endDt = req.body.endDt
+    var hostCountryID = parseInt(req.body.hostCountryId)
+
+    const sql_query = fs.readFileSync("matchGroupQuery.sql", 'utf-8')
+    console.log(sql_query)
+    console.log([strtDt, endDt, team1ID, team1ID, 
+        hostCountryID, hostCountryID, 
+        team2ID, team2ID])
+    con.query(sql_query, 
+        [strtDt, endDt, team1ID, team1ID, 
+        hostCountryID, hostCountryID, 
+        team2ID, team2ID],(err, results, fields)=>{
+        console.log("Query Successful")
+        if(err){
+            res.send("Error")
+            throw err
+        }else{
+            console.log(results)
+            results.forEach((elem, index, arr)=>{
+                arr[index].date = formatDate(elem.date)
+            })
+            res.render("user/t20Matches.ejs", {data: results})
+        }
+    })
+}
+
 module.exports.init = init;
 module.exports.getSeries = getSeries;
 module.exports.getSeriesGroup = getSeriesGroup;
+module.exports.getMatchGroup = getMatchGroup
 module.exports.getMatch = getMatch;
