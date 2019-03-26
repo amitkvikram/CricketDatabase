@@ -2,8 +2,8 @@
     <script>
         $('.queryResult tr:not(:first-child)').click(elem=>{
             // console.log("Clicked", elem.currentTarget.id)
-            const seriesId = $(elem.currentTarget).children().eq(0).html()
-            data = {seriesId: seriesId}
+            const matchId = $(elem.currentTarget).children().eq(0).html()
+            // data = {seriesId: seriesId}
             console.log($(elem.currentTarget).children().eq(0).html())
             // $.post({
             //     type: 'POST',
@@ -17,28 +17,27 @@
             //         console.log(err)
             //     } 
             // })
-            window.open("http://localhost:8080/user/t20/series/"+seriesId,
-                     '_blank')
+            window.open("http://localhost:8080/user/t20/match/"+matchId,
+                        '_blank')
         })
     </script>
     <h2>Results</h2>
-    <% if(series.length > 0) { %>
-        <table class = "seriesTable">
+    <% if(data.length > 0) { %>
+        <table class = "matchTable">
             <tr>
                 <th>ID</th>
+                <th>Match</th>
                 <th>Series Name</th>
-                <th>Type</th>
-                <th>Start Date</th>
-                <th>End Date</th>
+                <th>Date</th>
                 <th>Authority</th>
             </tr>
-            <%series.forEach(elem =>{%>
+            <%data.forEach(elem =>{%>
                 <tr>
-                    <td><%=elem.series_id%></td>
+                    <td><%=elem.match_id%></td>
+                    <td><%=elem.team1_name + " vs " + 
+                        elem.team2_name%></td>
                     <td><%=elem.series_name%></td>
-                    <td><%=elem.series_type%></td>
-                    <td><%=elem.starting_date%></td>
-                    <td><%=elem.end_date%></td>
+                    <td><%=elem.date%></td>
                     <td><%=elem.authority%></td>
                 </tr>
             <%})%>
@@ -50,25 +49,26 @@
     <style>
         .queryResult{
             padding-top: 5px;
+            padding-bottom: 10px;
             margin-left: 20px;
             width: 70%;
             clear: both;
             display: block;
             overflow: auto;
         }
-        .seriesTable{
+        .matchTable{
             /* display: block; */
             border: 1px solid black;
             border-collapse: collapse;
             /* overflow: auto; */
         }
         
-        .seriesTable tr:not(:first-child):hover{
+        .matchTable tr:not(:first-child):hover{
             background-color: antiquewhite;
             cursor: pointer;
         }
         
-        .seriesTable td, .seriesTable th{
+        .matchTable td, .matchTable th{
             padding: 4px;
             word-break: keep-all;
             text-align: center;

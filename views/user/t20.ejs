@@ -96,23 +96,27 @@
         var team2Obs = 
             Rx.Observable.fromEvent($("#team2"),'change')  
                                 .startWith("-1")
+
+        var hostCountryObs = 
+            Rx.Observable.fromEvent($('#hostCountry'),'change').startWith("-1")
             
         var combinedObs = Rx.Observable.combineLatest(fetchRadioObs, startingDateObs,
-                                endingDateObs, team1Obs, team2Obs
+                                endingDateObs, team1Obs, team2Obs, hostCountryObs
                                 )
                                 .debounce(200)
-                                .map(([a, b, c, d, e])=>{   
+                                .map(([a, b, c, d, e, f])=>{   
                                     if(typeof a !== 'string') a = $(a.target).val()
                                     if(typeof b !== 'string') b = $(b.target).val()
                                     if(typeof c !== 'string') c = $(c.target).val()
                                     if(typeof d !== 'string') d = $(d.target).val()
                                     if(typeof e !== 'string') e = $(e.target).val()
-                                    return [a, b, c, d, e]
+                                    if(typeof f !== 'string') f = $(f.target).val()
+                                    return [a, b, c, d, e, f]
                                 })
 
         combinedObs.subscribe(
-            ([a, b, c, d, e])=>{
-                console.log("Result = ", a, b, c, d, e)
+            ([a, b, c, d, e, f])=>{
+                console.log("Result = ", a, b, c, d, e, f)
                 if(a == 'series'){
                     data = {strtDt: b, endDt: c, team1ID: d, team2ID: e}
                     $.post({
@@ -128,7 +132,19 @@
                         } 
                     })
                 }else{
-
+                    data = {strtDt: b, endDt: c, team1ID: d, team2ID: e, hostCountryId:f}
+                    $.post({
+                        type: 'POST',
+                        url: 'user/t20/matches',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
+                        success: (data)=>{
+                            $('.queryResult').replaceWith(data)
+                        },
+                        error: (err)=>{
+                            console.log(err)
+                        } 
+                    }) 
                 }
             },
             (err)=>{console.log(err)}
@@ -156,11 +172,11 @@
         <div>
             Host Country: 
             <select name="HostCountry" id="hostCountry">
-                <option value="all">
+                <option value="-1">
                     All
                 </option>
                 <% countries.forEach(elem => { %>
-                    <option value= <%= elem.country_name %>>
+                    <option value= <%= elem.country_id %>>
                         <%= elem.country_name %>
                     </option>
                 <% }) %>
