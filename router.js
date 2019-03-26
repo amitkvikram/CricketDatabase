@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const userHome = require("./user/home")
 const t20   = require("./user/t20")
+const stadium = require("./user/stadium")
 const rootAdmin = require("./admin/root")
 var bodyParser = require('body-parser')
 // var multer  = require('multer')
@@ -93,6 +94,7 @@ router.get("/user/t20", (req, res) => {
 /*User Page -> T20 -> Series */
 router.get("/user/t20/series/:id", (req, res)=>{
     console.log("Request for Series: "+req.params.id);
+    console.log(typeof req.params.id)
     return t20.getSeries(req, res)
 })
 
@@ -105,6 +107,16 @@ router.get("/user/t20/match/:id", (req, res)=>{
 router.post("/user/t20/series", (req, res)=>{
     return t20.getSeriesGroup(req, res) 
 }) 
+
+router.post("/user/t20/matches", (req, res)=>{
+    return t20.getMatchGroup(req, res)
+}) 
+
+router.get("/user/stadium/:id", (req, res)=>{
+    console.log("Request for Stadium", req.params.id)
+    return stadium.init(req, res, req.params.id)
+})
+
 
 
 module.exports = router;
