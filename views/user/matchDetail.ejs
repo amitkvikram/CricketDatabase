@@ -204,16 +204,16 @@
             </div>
             <%team1Scorecard.bowling.forEach(elem =>{%>
                 <div class = "scorecard">
-                    <div class = "cellbowler"><%=elem.batsman_name%></div>
-                    <div class = "cellrunsgiven"><%=elem.out%></div>
-                    <div class = "cellmaidens"><%=elem.runs_scored%></div>
-                    <div class= "cellovers"><%=elem.balls_faced%></div>
+                    <div class = "cellbowler"><%=elem.player_name%></div>
+                    <div class = "cellrunsgiven"><%=elem.runs_given%></div>
+                    <div class = "cellmaidens"><%=elem.maidens%></div>
+                    <div class= "cellovers"><%=elem.overs_bowled + "."+elem.balls_bowled%></div>
                     <div class = "cellwickets"><%=elem.wicketsTaken%></div>
                 </div>
             <%})%>
         </div>
         <div class="team2">
-            <div class = "scorecardHeader">
+            <div class = "scorecardHeader"> 
                 <div class = "cellbatsmanHeader">Batsman</div>
                 <div class = "celloutHeader">Out</div>
                 <div class = "cellrunsscoredHeader">Runs</div>
