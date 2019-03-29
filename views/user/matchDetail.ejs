@@ -8,6 +8,9 @@
             }
             .matchName{
                 color: brown;
+                margin: 0;
+                margin-top: 4px;
+                margin-bottom: 4px;
             }
             body > div:first-child{
                 padding-bottom: 6px;
@@ -124,10 +127,18 @@
     </head>
     <body>
         <div>
-            <h2 class="matchName"><%=MatchDetail[0].team1_name 
-                + " vs " + 
-                MatchDetail[0].team2_name%>
-            </h2>
+            <div style ="width:100%; overflow: auto">
+                <h2 class="matchName" style = "float: left">
+                    <%=MatchDetail[0].team1_name 
+                    + " vs " + 
+                    MatchDetail[0].team2_name%>
+                </h2>
+                <span style="border:1px solid rgb(124, 16, 16); padding:2px; 
+                    display:inline-block;border-radius: 4px;
+                    margin: 4px; clear: right">
+                        Match
+                </span>
+            </div>
             <%if(MatchDetail[0].match_type != "normal"){%>
                 <span style="border:1px solid rgb(124, 16, 16); padding:4px; 
                         display:inline-block;border-radius: 4px;
