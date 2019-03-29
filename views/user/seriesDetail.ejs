@@ -28,6 +28,9 @@
             }
             .seriesName{
                 color: brown;
+                margin: 0;
+                margin-top: 4px;
+                margin-bottom: 4px;
             }
             .matches {
                 margin-top: 12px;
@@ -50,9 +53,17 @@
     </head>
     <body>
         <div class="seriesDetail">
-            <h2 class="seriesName">
-                <%=Series[0].series_name%>
-            </h2>
+        <div style ="width:100%; overflow: auto">
+                <h2 class="seriesName" style = "float: left">
+                    <%=Series[0].series_name%>
+                </h2>
+                <span style="border:1px solid rgb(124, 16, 16); padding:2px; 
+                    display:inline-block;border-radius: 4px;
+                    margin: 4px; clear: right">
+                        Series
+                </span>
+        </div>
+            <!-- <br> -->
         <!-- <p>  -->
             <div class = "left">
                 <span class="attribute">
